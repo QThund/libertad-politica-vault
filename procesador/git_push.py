@@ -15,6 +15,7 @@ _HERE = Path(__file__).parent.resolve()
 if str(_HERE) not in sys.path:
     sys.path.insert(0, str(_HERE))
 from logger import get_logger  # noqa: E402
+from git_checks import check_ready  # noqa: E402
 
 log = get_logger()
 
@@ -29,6 +30,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Stage all, commit, and push.")
     parser.add_argument("message", nargs="?", default="Update", help="Commit message")
     args = parser.parse_args()
+    check_ready()
 
     # Check if there is anything to commit
     status = run(["git", "status", "--porcelain"])

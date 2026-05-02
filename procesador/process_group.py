@@ -35,6 +35,7 @@ if str(_HERE) not in sys.path:
     sys.path.insert(0, str(_HERE))
 
 from logger import get_logger, log_session_start  # noqa: E402
+from git_checks import check_ready  # noqa: E402
 
 REPO_ROOT = _HERE.parent
 ALL_SOURCES = REPO_ROOT / "all-sources"
@@ -163,6 +164,7 @@ def main() -> None:
     )
     args = parser.parse_args()
     log_session_start()
+    check_ready()
     group_name = args.group_name
 
     ensure_all_sources()
