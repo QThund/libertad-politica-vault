@@ -2,3 +2,9 @@
 all-sources/
 
 all-pdfs/
+
+log.html
+
+conflicts/
+
+procesador/__pycache__/
