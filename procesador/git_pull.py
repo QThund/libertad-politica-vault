@@ -16,6 +16,7 @@ _HERE = Path(__file__).parent.resolve()
 if str(_HERE) not in sys.path:
     sys.path.insert(0, str(_HERE))
 from logger import get_logger  # noqa: E402
+from git_checks import check_ready  # noqa: E402
 
 log = get_logger()
 
@@ -48,6 +49,7 @@ def resolve_with_theirs(path: Path) -> None:
 
 
 def main() -> None:
+    check_ready()
     log.trace("Pulling from remote...")
     result = run(["git", "pull"], check=False)
 

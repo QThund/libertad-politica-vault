@@ -30,7 +30,14 @@ LOG_FILE = REPO_ROOT / "log.html"
 _HTML_HEADER = (
     "<!doctype html>\n"
     "<html lang=\"es\">\n"
-    "<head><meta charset=\"utf-8\"><title>LLM Wiki log</title></head>\n"
+    "<head><meta charset=\"utf-8\"><title>LLM Wiki log</title>\n"
+    "<style>\n"
+    "  body { font-family: monospace; }\n"
+    "  p.trace { color: black; }\n"
+    "  p.warning { color: #b58900; }\n"
+    "  p.error { color: red; }\n"
+    "</style>\n"
+    "</head>\n"
     "<body>\n"
 )
 
@@ -90,7 +97,7 @@ class WikiLogger:
         timestamp = self._now()
         print(f"[{timestamp}] {level}: {text}")
         line = (
-            f"<p>[{html.escape(timestamp)}] "
+            f"<p class=\"{level.lower()}\">[{html.escape(timestamp)}] "
             f"<strong>{level}</strong>: {html.escape(text)}</p>\n"
         )
         with self.log_path.open("a", encoding="utf-8") as f:
