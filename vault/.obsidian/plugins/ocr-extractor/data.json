@@ -1,0 +1,8 @@
+{
+  "ocrService": "tesseract",
+  "mistralSecret": "",
+  "customCommand": "",
+  "customCommandConvertPdfs": false,
+  "useEmbeddedText": true,
+  "autoExtractAttachments": false
+}
