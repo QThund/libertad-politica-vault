@@ -52,6 +52,7 @@ Create a self-improving knowledge system where:
 
 In each annotation, include a relative path link to the source file. If the source is a .txt file, replace the extension with .pdf, when including it in the annotation.
 I consider important the followng concepts, when processing the documents: political parties; person names; media names; dates; organization names; company names; Antonio García-Trevijano's opinions and mentions; book citations, movie citations, art citations, paper citations.
+Add relative (from annotations folder) links to sources, replacing ".txt" with ".pdf".
 
 Folder structure:
 -vault: Contains the Obsidian vault. Subfolder annotations: the annotations used by the LLM Wiki; the sources subfolder contains the plain-text files that were used as source for the wiki.
@@ -60,4 +61,3 @@ Folder structure:
 -documentos-procesados.txt is a file where the name of all processed documents is appended, so the system does not process them again.
 -grupos-procesados.txt is a file where the name of the processed folders is appended, so nobody can process them again.
 -config.txt is the file where some parameters that affect different steps of the process are stored.
-Files in all-sources will be copied to the vault/sources folder as they are processed.

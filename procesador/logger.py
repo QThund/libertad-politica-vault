@@ -34,6 +34,12 @@ _HTML_HEADER = (
     "<style>\n"
     "  body { font-family: monospace; }\n"
     "  p.trace { color: black; }\n"
+    "  p.prompt { color: #1a1a1a; background-color: #dff0ff; "
+    "border-left: 3px solid #4a90d9; padding: 4px 8px; "
+    "white-space: pre-wrap; }\n"
+    "  p.response { color: #1a1a1a; background-color: #ffe4ef; "
+    "border-left: 3px solid #e75480; padding: 4px 8px; "
+    "white-space: pre-wrap; }\n"
     "  p.warning { color: #b58900; }\n"
     "  p.error { color: red; }\n"
     "</style>\n"
@@ -88,6 +94,21 @@ class WikiLogger:
     def _now() -> str:
         return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+    _INLINE_STYLES = {
+        "PROMPT": (
+            "color:#1a1a1a;background-color:#dff0ff;"
+            "border-left:3px solid #4a90d9;padding:4px 8px;"
+            "white-space:pre-wrap;"
+        ),
+        "RESPONSE": (
+            "color:#1a1a1a;background-color:#ffe4ef;"
+            "border-left:3px solid #e75480;padding:4px 8px;"
+            "white-space:pre-wrap;"
+        ),
+        "WARNING": "color:#b58900;",
+        "ERROR": "color:red;",
+    }
+
     def _write(self, level: str, message: str) -> None:
         if message is None:
             return
@@ -96,9 +117,13 @@ class WikiLogger:
             return
         timestamp = self._now()
         print(f"[{timestamp}] {level}: {text}")
+        escaped = html.escape(text).replace("\n", "<br>\n")
+        style = self._INLINE_STYLES.get(level, "")
+        style_attr = f" style=\"{style}\"" if style else ""
         line = (
-            f"<p class=\"{level.lower()}\">[{html.escape(timestamp)}] "
-            f"<strong>{level}</strong>: {html.escape(text)}</p>\n"
+            f"<p class=\"{level.lower()}\"{style_attr}>"
+            f"[{html.escape(timestamp)}] "
+            f"<strong>{level}</strong>: {escaped}</p>\n"
         )
         with self.log_path.open("a", encoding="utf-8") as f:
             f.write(line)
@@ -111,6 +136,12 @@ class WikiLogger:
 
     def error(self, message: str) -> None:
         self._write("ERROR", message)
+
+    def prompt(self, message: str) -> None:
+        self._write("PROMPT", message)
+
+    def response(self, message: str) -> None:
+        self._write("RESPONSE", message)
 
 
 _shared: Optional[WikiLogger] = None

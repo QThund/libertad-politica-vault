@@ -47,6 +47,7 @@ CONFIG_FILE = REPO_ROOT / "config.txt"
 GIT_PULL_SCRIPT = _HERE / "git_pull.py"
 GIT_PUSH_SCRIPT = _HERE / "git_push.py"
 DOWNLOAD_SCRIPT = _HERE / "download_and_extract.py"
+PROCESS_DOC_SCRIPT = _HERE / "process_document.py"
 
 log = get_logger()
 
@@ -144,16 +145,14 @@ def git_push(message: str) -> None:
     run_subscript(GIT_PUSH_SCRIPT, message)
 
 
-def process_document(doc_path: Path, group_name: str) -> bool:
-    """Run the document-processing pipeline on a single file.
-
-    The actual processing script is still to be defined; for now this is
-    a placeholder that returns True so the surrounding workflow can be
-    exercised end-to-end.
-    """
+def process_document(doc_path: Path, group_name: str, n_tokens: int) -> bool:
+    """Run the document-processing pipeline on a single file."""
     log.trace(f"Procesando documento: {doc_path.name}")
-    # TODO: invoke the document-processing script here once it is defined.
-    return True
+    rel_path = doc_path.relative_to(REPO_ROOT)
+    cmd = [sys.executable, str(PROCESS_DOC_SCRIPT), str(rel_path), str(n_tokens)]
+    log.trace(f"Ejecutando: {' '.join(cmd)}")
+    result = subprocess.run(cmd, cwd=REPO_ROOT)
+    return result.returncode == 0
 
 
 def main() -> None:
@@ -168,6 +167,13 @@ def main() -> None:
     group_name = args.group_name
 
     ensure_all_sources()
+
+    config = read_config()
+    try:
+        max_tokens = int(config.get("MAX_TOKENS_PER_CHUNK", "").strip())
+    except ValueError:
+        log.error(f"MAX_TOKENS_PER_CHUNK inválido o ausente en {CONFIG_FILE}")
+        sys.exit(1)
 
     group_dir = ALL_SOURCES / group_name
     if not group_dir.is_dir():
@@ -215,7 +221,7 @@ def main() -> None:
 
         doc_path = VAULT_SOURCES / doc_name
         try:
-            success = process_document(doc_path, group_name)
+            success = process_document(doc_path, group_name, max_tokens)
         except Exception as e:
             log.error(f"Excepción procesando {doc_name}: {e}")
             continue
