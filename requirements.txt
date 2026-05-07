@@ -1,0 +1,24 @@
+# Core RAG framework
+llama-index-core
+llama-index-embeddings-huggingface
+llama-index-vector-stores-qdrant
+llama-index-llms-ollama
+llama-index-readers-file
+
+# Vector DB client
+qdrant-client
+
+# LLM provider
+anthropic
+
+# PDF parsers
+pypdf
+pymupdf
+
+# LlamaParse (cloud PDF parser)
+llama-cloud
+
+# HuggingFace embedding backend (KaLM-Embedding-Gemma3-12B)
+sentence-transformers
+transformers
+torch
