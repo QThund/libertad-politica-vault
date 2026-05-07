@@ -226,6 +226,7 @@ def _execute_single_query(
     try:
         if token_counter:
             token_counter.reset_counts()
+        log.trace(f"Consulta enviada a Qdrant: {query!r}")
         t0 = time.perf_counter()
         if llm_provider == "claude":
             source_nodes = query_engine.retrieve(query)
@@ -233,7 +234,7 @@ def _execute_single_query(
             response = query_engine.query(query)
             source_nodes = response.source_nodes
         elapsed = time.perf_counter() - t0
-        log.trace(f"Consulta a Qdrant completada en {elapsed:.3f}s — consulta: {query!r}")
+        log.trace(f"Consulta a Qdrant completada en {elapsed:.3f}s")
 
         print()
         print("=" * 80)
@@ -285,6 +286,13 @@ def _execute_single_query(
                 print(f"  Tiempo:        {elapsed_llm:.3f}s")
                 print("-" * 80)
                 print()
+                log.trace(
+                    f"Tokens CLAUDE — modelo: {model}, "
+                    f"input: {usage['input_tokens']:,}, "
+                    f"output: {usage['output_tokens']:,}, "
+                    f"total: {usage['total_tokens']:,}, "
+                    f"tiempo: {elapsed_llm:.3f}s"
+                )
             except Exception as e:
                 log.error(f"Error llamando a Claude: {e}")
                 sys.exit(1)
@@ -351,6 +359,7 @@ def _interactive_mode(
             try:
                 if token_counter:
                     token_counter.reset_counts()
+                log.trace(f"Consulta enviada a Qdrant: {query!r}")
                 t0 = time.perf_counter()
                 if llm_provider == "claude":
                     source_nodes = query_engine.retrieve(query)
@@ -358,7 +367,7 @@ def _interactive_mode(
                     response = query_engine.query(query)
                     source_nodes = response.source_nodes
                 elapsed = time.perf_counter() - t0
-                log.trace(f"Consulta a Qdrant completada en {elapsed:.3f}s — consulta: {query!r}")
+                log.trace(f"Consulta a Qdrant completada en {elapsed:.3f}s")
 
                 print()
                 print("-" * 80)
@@ -389,6 +398,12 @@ def _interactive_mode(
                                 f"output={usage['output_tokens']:,}, "
                                 f"total={usage['total_tokens']:,}]"
                             )
+                            log.trace(
+                                f"Tokens CLAUDE — modelo: {model}, "
+                                f"input: {usage['input_tokens']:,}, "
+                                f"output: {usage['output_tokens']:,}, "
+                                f"total: {usage['total_tokens']:,}"
+                            )
                         except Exception as e:
                             log.error(f"Error llamando a Claude: {e}")
                     else:
@@ -401,6 +416,12 @@ def _interactive_mode(
                                 f"[Tokens — LLM: {token_counter.total_llm_token_count:,}, "
                                 f"embeddings: {token_counter.total_embedding_token_count:,}, "
                                 f"tiempo: {elapsed:.3f}s]"
+                            )
+                            log.trace(
+                                f"Tokens consumidos — "
+                                f"LLM: {token_counter.total_llm_token_count:,}, "
+                                f"embeddings: {token_counter.total_embedding_token_count:,}, "
+                                f"tiempo: {elapsed:.3f}s"
                             )
                 else:
                     print("No se encontraron chunks relevantes.")
