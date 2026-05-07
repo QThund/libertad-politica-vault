@@ -38,7 +38,7 @@ if str(_HERE) not in sys.path:
     sys.path.insert(0, str(_HERE))
 
 from logger import get_logger  # noqa: E402
-from process_document import read_config  # noqa: E402
+from config_utils import read_config  # noqa: E402
 
 REPO_ROOT = _HERE.parent
 DEFAULT_QDRANT_PATH = REPO_ROOT / "vault" / "qdrant_db"

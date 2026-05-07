@@ -24,25 +24,8 @@ _REPO_ROOT = _HERE.parent
 
 if str(_HERE) not in sys.path:
     sys.path.insert(0, str(_HERE))
+from config_utils import read_config  # noqa: E402
 from logger import get_logger  # noqa: E402
-
-
-# ---------------------------------------------------------------------------
-# Config
-# ---------------------------------------------------------------------------
-
-def load_config() -> dict[str, str]:
-    config_path = _REPO_ROOT / "config.txt"
-    cfg: dict[str, str] = {}
-    if not config_path.exists():
-        return cfg
-    for line in config_path.read_text(encoding="utf-8").splitlines():
-        line = line.strip()
-        if not line or line.startswith("#") or "=" not in line:
-            continue
-        key, _, value = line.partition("=")
-        cfg[key.strip()] = value.strip()
-    return cfg
 
 
 # ---------------------------------------------------------------------------
@@ -177,7 +160,7 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
     log = get_logger()
-    cfg = load_config()
+    cfg = read_config()
     total_start = time.monotonic()
 
     # Resolver parser: argumento CLI > config.txt > fallback pymupdf

@@ -33,8 +33,8 @@ _HERE = Path(__file__).parent.resolve()
 if str(_HERE) not in sys.path:
     sys.path.insert(0, str(_HERE))
 
+from config_utils import read_config  # noqa: E402
 from logger import get_logger  # noqa: E402
-from process_document import _resolve_thinking_budget  # noqa: E402
 
 REPO_ROOT = _HERE.parent
 DEFAULT_QDRANT_PATH = REPO_ROOT / "vault" / "qdrant_db"
@@ -44,25 +44,17 @@ DEFAULT_OLLAMA_URL = "http://localhost:11434"
 
 log = get_logger()
 
+_THINKING_PRESETS: dict[str, int] = {"none": 0, "low": 1024, "medium": 8000, "high": 16000}
 
-def load_config() -> dict:
-    config = {}
-    config_path = REPO_ROOT / "config.txt"
-    if not config_path.exists():
-        log.warning(f"config.txt no encontrado en {config_path}")
-        return config
+
+def _resolve_thinking_budget(value: str) -> int:
+    v = value.strip().lower()
+    if v in _THINKING_PRESETS:
+        return _THINKING_PRESETS[v]
     try:
-        with open(config_path, "r") as f:
-            for line in f:
-                line = line.strip()
-                if not line or line.startswith("#"):
-                    continue
-                if "=" in line:
-                    key, value = line.split("=", 1)
-                    config[key.strip()] = value.strip()
-    except Exception as e:
-        log.warning(f"Error leyendo config.txt: {e}")
-    return config
+        return max(0, int(v))
+    except ValueError:
+        return 0
 
 
 def setup_index(qdrant_path: str, collection: str) -> VectorStoreIndex:
@@ -115,7 +107,7 @@ def call_claude_with_context(
 
 
 def main() -> None:
-    config = load_config()
+    config = read_config()
     llm_provider = config.get("LLM_PROVIDER", "ollama").lower()
 
     if llm_provider == "claude":
