@@ -8,3 +8,9 @@ log.html
 conflicts/
 
 procesador/__pycache__/
+
+final/
+
+test-pdfs/
+
+vault/qdrant_db/

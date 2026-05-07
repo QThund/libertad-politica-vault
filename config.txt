@@ -1,4 +1,29 @@
 DRIVE_URL=https://drive.google.com/file/d/1UBN0B-I-o1it-Z_5Upk71XktipGt_cDr/view?usp=drive_link
 MAX_WORDS_PER_GROUP=120000
-MAX_TOKENS_PER_CHUNK=1500
+MAX_TOKENS_PER_CHUNK=2500
 DEBUG_RESPONSES=false
+# Proveedor LLM: "ollama" o "claude"
+LLM_PROVIDER=claude
+# Modelo de Ollama (solo si LLM_PROVIDER=ollama)
+OLLAMA_MODEL=llama3
+# Modelo de Claude (solo si LLM_PROVIDER=claude)
+# Opciones: claude-opus-4-7 | claude-sonnet-4-6 | claude-haiku-4-5-20251001
+# Nota: CLAUDE_THINKING_BUDGET solo funciona con opus
+CLAUDE_MODEL=claude-sonnet-4-6
+# Temperatura de Claude: 0.0 a 1.0 (se ignora si CLAUDE_THINKING_BUDGET != none)
+CLAUDE_TEMPERATURE=0.3
+# Nivel de thinking de Claude: none | low | medium | high | <número de tokens>
+CLAUDE_THINKING_BUDGET=medium
+# Parser de PDF: pypdf | pymupdf | llamaparse
+PDF_PARSER=llamaparse
+# API key de LlamaParse (solo si PDF_PARSER=llamaparse)
+# AVISO: LlamaParse envía los PDFs a cloud.llamaindex.ai
+LLAMAPARSE_API_KEY=
+# Tipo de resultado de LlamaParse: text | markdown
+LLAMAPARSE_RESULT_TYPE=markdown
+# Idiomas del documento (separados por coma, ej: es,en)
+LLAMAPARSE_LANGUAGE=es,en
+# Tier de LlamaParse: fast | cost_effective | agentic | agentic_plus
+LLAMAPARSE_TIER=cost_effective
+# Versión del tier: latest o una versión específica
+LLAMAPARSE_VERSION=latest
